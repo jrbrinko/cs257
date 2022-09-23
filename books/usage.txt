@@ -1,0 +1,14 @@
+SYNOPSIS
+	python3 books.py [-b | -a | -y | -h] [S1] [S2]
+
+DESCRIPTION
+	This program allows users to search a database of books. Users specify whether to search by book title, author title, or year  range. The program will return a list of the books and authors that match the search.
+
+	-b --book 	Given a search string S, print a list of books whose titles contain S sorted by title. S is case insensitive (i.e. -b fire).
+
+	-a --author 	Searches book authors containing string S. Returns a list sorted alphabetically by author surname (i.e. -a smith).
+
+	-y --year	Given a range of years A to B, prints the list of books published between years A to B (i.e. -y 1960 2000).
+
+	-h --help	Gives the list of usage commands. 
+	
