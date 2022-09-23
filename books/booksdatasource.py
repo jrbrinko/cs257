@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 '''
     booksdatasource.py
-    Jeff Ondich, 21 September 2022
-
+    Jeff Ondich, 21 September 2021
+    Modified by Carl Tankersly and A.J. Ristino, 2 October 2021
+ 
     For use in the "books" assignment at the beginning of Carleton's
-    CS 257 Software Design class, Fall 2022.
+    CS 257 Software Design class, Fall 2021.
 '''
 
 import csv
@@ -49,7 +50,16 @@ class BooksDataSource:
             suitable instance variables for the BooksDataSource object containing
             a collection of Author objects and a collection of Book objects.
         '''
-        pass
+        self.Authors = []
+        with open(books_csv_file_name) as csvfile:
+            reader = csv.reader(csvfile)
+            temp_books = []
+            for line in reader:
+                temp_authors = self.parse_authors(line)
+                temp_books.append(Book(line[0], int(line[1]), temp_authors))
+                self.add_authors(temp_authors)
+        self.Books = sorted(temp_books, key=lambda book: book.title)
+        self.Authors = sorted(self.Authors, key=lambda author: (author.surname, author.given_name))
 
     def authors(self, search_text=None):
         ''' Returns a list of all the Author objects in this data source whose names contain
@@ -57,7 +67,12 @@ class BooksDataSource:
             returns all of the Author objects. In either case, the returned list is sorted
             by surname, breaking ties using given name (e.g. Ann Brontë comes before Charlotte Brontë).
         '''
-        return []
+        authors = []
+        search_text = '' if search_text is None else search_text.lower()
+        for author in self.Authors:
+            if search_text in author.surname.lower() or search_text in author.given_name.lower():
+                authors.append(author)
+        return sorted(authors, key=lambda author: (author.surname, author.given_name))
 
     def books(self, search_text=None, sort_by='title'):
         ''' Returns a list of all the Book objects in this data source whose
@@ -71,7 +86,15 @@ class BooksDataSource:
                 default -- same as 'title' (that is, if sort_by is anything other than 'year'
                             or 'title', just do the same thing you would do for 'title')
         '''
-        return []
+        books = []
+        for book in self.Books:
+            if search_text is not None and search_text in book.title.lower(): 
+                books.append(book)
+            elif search_text is None: # apppend everything if no search term is given
+                books.append(book)
+        if sort_by == 'year':
+            return sorted(books, key=lambda book: book.publication_year)
+        return sorted(books, key=lambda book: book.title)
 
     def books_between_years(self, start_year=None, end_year=None):
         ''' Returns a list of all the Book objects in this data source whose publication
@@ -84,5 +107,51 @@ class BooksDataSource:
             during start_year should be included. If both are None, then all books
             should be included.
         '''
-        return []
+        books = []
+        if start_year is None:
+            start_year = 0
+        if end_year is None:
+            end_year = 10000
+        for book in self.Books:
+            if book.publication_year <= end_year and book.publication_year >= start_year:
+                books.append(book)
+        return sorted(books, key=lambda book: book.publication_year)
 
+    def books_by_author(self, author):
+        '''Returns a list of all of the books in the data source written by a given author'''
+        books_list = []
+        for book in self.Books:
+            if author in book.authors:
+                books_list.append(book)
+        return books_list
+
+    def parse_authors(self, line):
+        '''Parses a list of author fields from the CSV input file and returns a list of Author objects'''
+        author_raw_data = line[2].split(' and ') # separate multiple authors
+        authors_parsed = []
+        for author in author_raw_data:
+            curr_author = author.split() # [first_name, surname, '(birth_year-death_year)']
+            if len(curr_author) > 3: # if the author has more than one given name
+                first_name = curr_author[0] + ' ' + curr_author[1] # concatenate given names
+                surname = curr_author[2]
+                years = curr_author[3].strip('(').strip(')').split('-')
+            else:
+                first_name = curr_author[0]
+                surname = curr_author[1]
+                years = curr_author[2].strip('(').strip(')').split('-')
+            birth_year = int(years[0])
+            death_year = None if years[1] == '' else int(years[1]) 
+            authors_parsed.append(Author(surname, first_name, birth_year, death_year))
+        return authors_parsed
+
+    def add_authors(self, author_list):
+        '''Checks to see if each Author object in the list is in the data source and adds it to the 
+           data source if the author is not already there'''
+        for author in author_list:
+            author_in_list = False
+            for i in range(len(self.Authors)):
+                if author == self.Authors[i]: # if trying to add an author already in the list...
+                    author_in_list = True     #
+                    break                     # ...don't
+            if not author_in_list:
+                self.Authors.append(author)
