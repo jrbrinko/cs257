@@ -21,7 +21,7 @@ class Author:
         ''' For simplicity, we're going to assume that no two authors have the same name. '''
         return self.surname == other.surname and self.given_name == other.given_name
         
-    def str(self):
+    def __str__(self):
         '''serves as author print function'''
         return (f"{self.given_name} {self.surname} ({self.birth_year}-{self.death_year})")
 

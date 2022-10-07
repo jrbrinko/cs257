@@ -8,23 +8,10 @@ import sys
 
 def usage_statement():
     #prints usage statement
-    print('SYNOPSIS')
-    print('\t\t python3 booky.py [-b | -a | -y | -h [S1] [S2]')
-    print('\n')
-    print('DESCRIPTION')
-    print('\t\t This program allows users to search a database of books. Users specify whether to search by book title, author title, or year  range. The program will return a list of the books and authors that match the search.')
-    
-    print('\n')
-    print('\t -b --book \tGiven a search string S1, print a list of books whose titles contain S1 sorted by title or year. S is case insensitive (i.e. -b fire). S2 indicates sort type. Default sort type is by title.')
+    usage_txt = open('usage.txt', 'r')
+    usage_contents = usage_txt.read()
+    print(usage_contents)
 
-    print('\n')
-    print('\t-a --author \tSearches book authors containing string S. Returns a list sorted alphabetically by author surname (i.e. -a smith).')
-
-    print('\n')
-    print('\ty --year \tGiven a range of years S1 to S2, prints the list of books published between years S1 to S2 (i.e. -y 1960 2000). Unspecified years default to None. Use -y None 2000 to search for all books before the year 2000')
-
-    print('\n')
-    print('\t-h --help\tGives the list of usage commands.')
 
 def display_author(data_source):
     #display function associated with -a --author
@@ -39,6 +26,7 @@ def display_author(data_source):
     for author in authorList: #print formatted string
          print(f'{author.given_name:10} {author.surname:10}')
 
+
 def display_books(data_source):
     #display function associated with -b --book
     if(len(sys.argv) == 2): #no search term or sort specified
@@ -49,12 +37,13 @@ def display_books(data_source):
         bookList = data_source.books(sys.argv[2], sys.argv[3])
     for book in bookList:
         authorString = ''
-        authorString += book.authors[0].str() 
+        authorString += book.authors[0].__str__() 
         if len(book.authors) > 1: #appending second author name if necessary
-            authorString += ' and ' + book.authors[1].str()
+            authorString += ' and ' + book.authors[1].__str__()
 
         print(f'{book.title:50} {book.publication_year:15} By: {authorString:10}') #print formatted string
-   
+
+
 def display_years(data_source):
     # display function for years
     # input: a booksdatasource file
@@ -68,12 +57,14 @@ def display_years(data_source):
     # Goes through books to print all strings
     for book in bookList:
         authorString = ''
-        authorString += book.authors[0].str()
+        authorString += book.authors[0].__str__()
         if len(book.authors) > 1:
-            authorString += ' and ' + book.authors[1].str()
+            authorString += ' and ' + book.authors[1].__str__()
 
         # prints books
         print(f'{book.title:50} {book.publication_year:15} By: {authorString:10}')
+
+
 def main():
 
     # Creates instance of booksdatasource object =
@@ -96,11 +87,11 @@ def main():
         
         # 'Help' argument
         else :
-            print(usage_statement())
+            usage_statement()
 
     # In case of invalid number of arguments
     else:
-      print(usage_statement())
+        usage_statement()
 
 if __name__ == "__main__":
     main()
