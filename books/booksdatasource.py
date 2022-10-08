@@ -2,6 +2,7 @@
 '''
     booksdatasource.py
     Jeff Ondich, 21 September 2022
+    Edited by Amir Al-Sehikh and James Brin
 
     For use in the "books" assignment at the beginning of Carleton's
     CS 257 Software Design class, Fall 2022.
@@ -25,6 +26,7 @@ class Author:
         '''serves as author print function'''
         return (f"{self.given_name} {self.surname} ({self.birth_year}-{self.death_year})")
 
+
 class Book:
     def __init__(self, title='', publication_year=None, authors=[]):
         ''' Note that the self.authors instance variable is a list of
@@ -33,12 +35,12 @@ class Book:
         self.publication_year = publication_year
         self.authors = authors
 
-
     def __eq__(self, other):
         ''' We're going to make the excessively simplifying assumption that
             no two books have the same title, so "same title" is the same
             thing as "same book". '''
         return self.title == other.title
+
 
 class BooksDataSource:
 
@@ -58,8 +60,8 @@ class BooksDataSource:
         '''
 
         # All authors and books objects for instance of class
-        self.allAuthors = []
-        self.allBooks = []
+        self.all_authors = []
+        self.all_books = []
 
         # Opens the CSV file and stores data
         with open(books_csv_file_name, newline='') as f:
@@ -69,7 +71,7 @@ class BooksDataSource:
         for d in data:
             unparsed_entry = d.pop(2) #removes the last unparsed 
             two_authors = unparsed_entry.split(' and ') #splitting multiple authors first, each author is then handled seperately
-            newAuthors = [] 
+            new_authors = [] 
             for a in two_authors: #assigning author constructor parameters
                 parsed_entry = a.split(' (')
                 name = parsed_entry[0].split(' ')
@@ -79,14 +81,13 @@ class BooksDataSource:
                 birth_year = years[0]
                 death_year = years[1][:-1] 
             
-                newAuthor = Author(surname, given_name, birth_year, death_year) #Constructing author(s) and book, adding to global lists
-                newAuthors.append(newAuthor)
-                if newAuthor not in self.allAuthors: 
-                    self.allAuthors.append(newAuthor) 
-            newBook = Book(d[0], int(d[1]), newAuthors)
-            if newBook not in self.allBooks:
-                self.allBooks.append(newBook) 
-
+                new_author = Author(surname, given_name, birth_year, death_year) #Constructing author(s) and book, adding to global lists
+                new_authors.append(new_author)
+                if new_author not in self.all_authors: 
+                    self.all_authors.append(new_author) 
+            new_book = Book(d[0], int(d[1]), new_authors)
+            if new_book not in self.all_books:
+                self.all_books.append(new_book) 
 
     def authors(self, search_text=None):
         ''' Returns a list of all the Author objects in this data source whose names contain
@@ -94,15 +95,15 @@ class BooksDataSource:
             returns all of the Author objects. In either case, the returned list is sorted
             by surname, breaking ties using given name (e.g. Ann Brontë comes before Charlotte Brontë).
         '''
-        authorSearch = []
+        author_search = []
         if search_text is not None:
-            for author in self.allAuthors: #checking for search matches
+            for author in self.all_authors: #checking for search matches
                 if (search_text.lower() in author.surname.lower()) or (search_text.lower() in author.given_name.lower()):
-                    authorSearch.append(author)
+                    author_search.append(author)
         else:
-            authorSearch = self.allAuthors
+            author_search = self.all_authors
 
-        return sorted(authorSearch, key=lambda x:(x.surname, x.given_name)) #sorting output by surname
+        return sorted(author_search, key=lambda x:(x.surname, x.given_name)) #sorting output by surname
 
     def books(self, search_text=None, sort_by='title'):
         ''' Returns a list of all the Book objects in this data source whose
@@ -117,24 +118,24 @@ class BooksDataSource:
                             or 'title', just do the same thing you would do for 'title')
         '''
         # All books that fit the constraint
-        returnedBooks = [] 
+        returned_books = [] 
         if (search_text == None):
             # No search text return all books
-            returnedBooks = self.allBooks
+            returned_books = self.all_books
         else:
             # Goes through all books and checks to see if the search text
             # is in it.
-            for aBook in self.allBooks:
-                if search_text.lower() in aBook.title.lower():
-                    returnedBooks.append(aBook)
+            for a_book in self.all_books:
+                if search_text.lower() in a_book.title.lower():
+                    returned_books.append(a_book)
 
         # Returns the books by sort
         if (sort_by == 'year'):
             # Sorted by year 
-            return sorted(returnedBooks, key=lambda x:(x.publication_year, x.title))
+            return sorted(returned_books, key=lambda x:(x.publication_year, x.title))
         else:
             # Sorted by title
-            return sorted(returnedBooks, key=lambda x:(x.title, x.publication_year))
+            return sorted(returned_books, key=lambda x:(x.title, x.publication_year))
 
     def books_between_years(self, start_year=None, end_year=None):
         ''' Returns a list of all the Book objects in this data source whose publication
@@ -165,15 +166,15 @@ class BooksDataSource:
                 exit() 
 
         # List of books in the range that are going to be returned.
-        bookList = []
+        book_list = []
     
         # Goes through all books based on the publication year.
-        for b in self.allBooks:
+        for b in self.all_books:
             if start_year <= b.publication_year <= end_year:
-                bookList.append(b)
+                book_list.append(b)
 
         # Returns sorted list based on publication year.
-        return sorted(bookList, key= lambda x: (x.publication_year, x.title))
+        return sorted(book_list, key= lambda x: (x.publication_year, x.title))
 
 def main():
     pass
