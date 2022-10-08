@@ -2,6 +2,8 @@
 '''
     booksdatasource.py
     Jeff Ondich, 21 September 2022
+    
+    Amir Al-Sehikh and James Brink
     Revised by Amir Al-Sehikh and James Brink
 
     For use in the "books" assignment at the beginning of Carleton's
