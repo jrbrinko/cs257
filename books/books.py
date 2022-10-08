@@ -1,10 +1,11 @@
 '''
    books.py
-   Amir Al-Sehikh and James Brink
+   Revised by Amir Al-Sehikh and James Brink
    27 September 2022
 '''
 import booksdatasource
 import sys
+
 
 def usage_statement():
     #prints usage statement

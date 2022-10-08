@@ -2,14 +2,13 @@
 '''
     booksdatasource.py
     Jeff Ondich, 21 September 2022
-    Edited by Amir Al-Sehikh and James Brin
+    Revised by Amir Al-Sehikh and James Brink
 
     For use in the "books" assignment at the beginning of Carleton's
     CS 257 Software Design class, Fall 2022.
 '''
 
 import csv
-
 
 class Author:
     def __init__(self, surname='', given_name='', birth_year=None, death_year=None):
