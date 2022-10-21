@@ -1,0 +1,11 @@
+SYNOPSIS
+    python3 olympics.py [-h | -a | -g | -e] [S]
+
+DESCRIPTION
+    -h --help   Gives the list of usage commands.
+
+    -a --athlete Given a search string S, the lists of all atheltes from that specific NOC/country. (i.e. -a JPN)
+
+    -g --gold Gives the list of all countries/NOCs with gold medals in descending order.
+
+    -e --events Given a search string S, gives the list of all events for a particular athelte. NOTE: due to the quanity of data, full names are required and sometimes nicknames are included. (i.e. -e)
